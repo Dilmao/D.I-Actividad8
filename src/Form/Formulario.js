@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import classes from './Formulario.css';
+import classes from './Form.module.css';
 
 function Formulario() {
     const [enteredEmail, setEnteredEmail] = useState('');
