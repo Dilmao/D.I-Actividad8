@@ -1,23 +1,44 @@
-import { useState } from 'react';
+import { useReducer } from 'react';
 import classes from './Form.module.css';
 
+const initialFormState = {
+    enteredEmail: "",
+    emailIsValid: false,
+    enteredPassword: "",
+    passwordIsValid: false
+}
+
+const formReducer = (state, action) => {
+    if (action.type === "emailInput") {
+        return {
+            ...state,
+            enteredEmail: action.value,
+            emailIsValid: action.value.includes("@")
+        };
+    }
+    if (action.type === "passwordInput") {
+        return {
+            ...state,
+            enteredPassword: action.value,
+            passwordIsValid: action.value.trim().length > 7
+        }
+    }
+    return initialFormState
+}
+
 function Formulario() {
-    const [enteredEmail, setEnteredEmail] = useState('');
-    const [emailIsValid, setEmailIsValid] = useState(false);
-    const [enteredPassword, setEnteredPassword] = useState('');
-    const [passwordIsValid, setPasswordIsValid] = useState(false);
+    const [formState, dispatchForm] = useReducer(formReducer, initialFormState);
+    const { enteredEmail, emailIsValid, enteredPassword, passwordIsValid} = formState
     const formIsValid = emailIsValid && passwordIsValid;
 
     function changeEmailHandler(event) {
         const value = event.target.value;
-        setEnteredEmail(value);
-        setEmailIsValid(value.includes('@'));
+        dispatchForm({type: "emailInput", value})
     }
 
     function changePasswordHandler(event) {
         const value = event.target.value;
-        setEnteredPassword(value);
-        setPasswordIsValid(value.trim().length > 7);
+        dispatchForm({type: "passwordInput", value})
     }
 
     function submitFormHandler(event) {
